@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: sureshtamizan/company-portal-frontend:v1
+        image: sureshtamizan/company-portal-frontend:v3
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
