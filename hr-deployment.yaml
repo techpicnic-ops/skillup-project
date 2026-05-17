@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hr-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-hr
+  template:
+    metadata:
+      labels:
+        app: backend-hr
+    spec:
+      containers:
+      - name: backend-hr
+        image: sureshtamizan/company-portal-backend-hr:v1
+        ports:
+        - containerPort: 5000
