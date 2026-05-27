@@ -38,7 +38,7 @@ jobs:
     # Step 5 - Health check / Test
     - name: Test Application
       run: |
-        curl -f http://localhost:8081 || exit 1
+        curl -f http://localhost:8080 || exit 1
 
     # Step 6 - Show container logs if failed
     - name: Show Logs on Failure
