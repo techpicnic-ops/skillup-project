@@ -1,13 +1,10 @@
-name: PR Docker Build Test
+name: Docker Build Test
 
 on:
   pull_request:
     branches:
       - main
-  push:                # Trigger for merge (push to main)
-    branches:
-      - main
-
+      
 env:
   APP_VERSION: 1.0.0
 
