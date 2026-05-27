@@ -1,0 +1,39 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  APP_VERSION: 1.0.0
+  IMAGE_NAME: my-app
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # Checkout repository
+    - name: Checkout Code
+      uses: actions/checkout@v5
+
+    # Login to Docker Hub
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # Build Docker image
+    - name: Build Docker Image
+      run: |
+        cd application
+
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$APP_VERSION .
+
+    # Push version tag
+    - name: Push Version Tag
+      run: |
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/$IMAGE_NAME:$APP_VERSION
