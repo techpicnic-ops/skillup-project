@@ -1,0 +1,54 @@
+name: PR Docker Build Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:                # Trigger for merge (push to main)
+    branches:
+      - main
+
+env:
+  APP_VERSION: 1.0.0
+
+jobs:
+  docker-build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1 - Checkout code
+    - name: Checkout Repository
+      uses: actions/checkout@v5
+
+    # Step 2 - Build Docker image
+    - name: Build Docker Image
+      run: |
+        cd application
+        docker build -t my-app:$APP_VERSION .
+
+    # Step 3 - Run container
+    - name: Run Docker Container
+      run: |
+        docker run -d \
+          --name my-app-container \
+          -p 8080:80 \
+          my-app:$APP_VERSION
+
+    # Step 4 - Wait for app startup
+    - name: Wait for Application
+      run: sleep 15
+
+    # Step 5 - Health check / Test
+    - name: Test Application
+      run: |
+        curl -f http://localhost:8080 || exit 1
+
+    # Step 6 - Show container logs if failed
+    - name: Show Logs on Failure
+      run: docker logs my-app-container
+
+    # Step 7 - Cleanup
+    - name: Cleanup
+      run: |
+        docker stop my-app-container || true
+        docker rm my-app-container || true

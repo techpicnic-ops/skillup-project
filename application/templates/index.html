@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Portal</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 50px 60px;
+            border-radius: 12px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            text-align: center;
+            width: 420px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 34px;
+            color: #2c3e50;
+        }
+
+        p {
+            margin-bottom: 35px;
+            color: #6c757d;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 20px 0;
+        }
+
+        a {
+            display: block;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+            border-radius: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hr {
+            background: linear-gradient(135deg, #007BFF, #0056b3);
+        }
+
+        .finance {
+            background: linear-gradient(135deg, #28A745, #1e7e34);
+        }
+
+        a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        .env-info {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        font-size: 12px;
+        color: #adb5bd;
+        text-align: left;
+    }
+    
+    .env-info code {
+        color: #0a75e0;
+        background: #f1f3f5;
+        padding: 2px 4px;
+        border-radius: 4px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Company Portal</h1>
+        <p>Select a department to continue</p>
+
+        <ul>
+            <li>
+                <a href="/hr" class="hr">
+                    HR DEPARTMENT
+                </a>
+            </li>
+
+            <li>
+                <a href="/finance" class="finance">
+                    FINANCE DEPARTMENT
+                </a>
+            </li>
+        </ul>
+
+        
+            {% if config %}
+                <div class="env-info">
+                    <p>Data loaded from volume mounted ConfigMap</p>
+                    <p style="margin-bottom: 10px; font-weight: bold; font-size: large;">Info needed for Application:</p>
+                    <p><strong>Config Version:</strong> <code>{{ config.config_version }}</code></p>
+                    <ul style="margin-bottom: 10px; font-weight: bold; font-size: large; color: #28A745;">
+                        <li>proxy: <code>{{ config.app_values.proxy }}</code></li>
+                        <li>db_host: <code>{{ config.app_values.db_host }}</code></li>
+                        <li>port: <code>{{ config.app_values.port }}</code></li>
+                    </ul>
+                </div>
+            {% else %}
+            <div class="env-info">
+                <p>Data loaded from environment variables - ConfigMap</p>
+                <p style="margin-bottom: 10px; font-weight: bold; font-size: large;">Info needed for Application:</p>
+                <ul style="margin-bottom: 10px; font-weight: bold; font-size: large; color: #28A745;">
+                    <li>proxy: <code>{{ proxy }}</code></li>
+                    <li>db_host: <code>{{ db_host }}</code></li>
+                    <li>port: <code>{{ port }}</code></li>
+                </ul>
+            </div>
+            {% endif %}
+ 
+
+    </div>
+</body>
+</html>
