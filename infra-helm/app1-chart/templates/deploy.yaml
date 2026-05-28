@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name:  {{ .Release.Name }}-company-portal-frontend  # Release-aware name
+  namespace: app-helm
 spec:
   replicas: {{ .Values.replicaCount }} # From values.yaml
   selector:
