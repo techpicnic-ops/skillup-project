@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  {{ .Release.Name }}-company-portal-frontend  # Release-aware name
+spec:
+  replicas: {{ .Values.replicaCount }} # From values.yaml
+  selector:
+    matchLabels:
+      app: company-portal-frontend-label
+  template:
+    metadata:
+      labels:
+        app: company-portal-frontend-label
+    spec:
+      containers:
+      - name: company-portal-frontendcontainer
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
