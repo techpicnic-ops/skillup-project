@@ -6,6 +6,7 @@ metadata:
 spec:
   selector:
     app: company-portal-backend-finance-label
+    namespace: company-portal-ns
   type: ClusterIP
   ports:
     - port: 80  # Service Port that is exposed on the Service itself. Usage: If another pod wants to reach your shopping cart, it will call http://shopping-cart-svc:80.
