@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: company-portal-backend-finance-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: company-portal-backend-finance-label
+  template:
+    metadata:
+      labels:
+        app: company-portal-backend-finance-label
+    spec:
+      containers:
+      - name: company-portal-backend-finance
+        image: sureshtamizan/company_portal_backend_finance:1.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
