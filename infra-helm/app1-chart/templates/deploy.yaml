@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: company-portal-frontendcontainer
-        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        image: sureshtamizan/{{ .Values.image.repository }}:{{ .Values.image.tag }}  #sureshtamizan/company-portal-frontend:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 8081
