@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: company-portal-frontend-deployment
+  namespace: company-portal-ns
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: company-portal-frontend-label
+  template:
+    metadata:
+      labels:
+        app: company-portal-frontend-label
+    spec:
+      containers:
+      - name: company-portal-frontendcontainer
+        image: sureshtamizan/company-portal-frontend:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+        env:
+          - name: PROXY
+            value: asdf
+
+
+
+
+
