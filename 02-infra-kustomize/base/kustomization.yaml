@@ -9,4 +9,3 @@ resources:
   - 04-service-cp-frontend.yaml
   - 05-service-cp-hr.yaml
   - 06-service-cp-finance.yaml
-  - 07-ingress-company-portal.yaml
