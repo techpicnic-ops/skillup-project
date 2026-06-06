@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Reference to shared base
+resources:
+  - ../../base
+
+# Optional: Apply name prefix/suffix
+nameSuffix: -stage
+namespace: company-portal-ns-stage
+replicas:
+  - name: company-portal-frontend-deployment
+    count: 2
+images:
+  - name: docker.io/sureshtamizan/company_portal_frontend
+    newTag: 2.0.0

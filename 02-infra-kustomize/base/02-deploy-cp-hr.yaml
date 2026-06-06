@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: company-portal-backend-hr-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: company-portal-backend-hr-label
+  template:
+    metadata:
+      labels:
+        app: company-portal-backend-hr-label
+    spec:
+      containers:
+      - name: company-portal-backend-hr
+        image: sureshtamizan/company-portal-backend-hr:v1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
