@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - 00-namespace.yaml
+  - 01-deploy-cp-frontend.yaml
+  - 02-deploy-cp-hr.yaml
+  - 03-deploy-cp-finance.yaml
+  - 04-service-cp-frontend.yaml
+  - 05-service-cp-hr.yaml
+  - 06-service-cp-finance.yaml
+  - 07-ingress-company-portal.yaml
