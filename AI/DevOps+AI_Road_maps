@@ -1,0 +1,46 @@
+If Your Goal Is DevOps + AI
+
+Given your recent interests:
+
+Kubernetes
+AKS
+Prometheus
+Grafana
+Terraform
+ArgoCD
+
+I'd follow this roadmap:
+
+Phase 1
+--------
+Learn:
+- LLM basics
+- Tokens
+- Embeddings
+- Context Windows
+
+Phase 2
+--------
+Build:
+- Simple RAG with Kubernetes docs
+- Chroma DB
+- Python
+
+Phase 3
+--------
+Build:
+- MCP Server for Kubernetes
+- MCP Server for Prometheus
+- MCP Server for ArgoCD
+
+Phase 4
+--------
+Build AI DevOps Assistant
+
+Examples:
+- "Show pods with high CPU"
+- "Why is HPA not scaling?"
+- "Generate ArgoCD Application YAML"
+- "Explain this Terraform plan"
+
+That path will give you practical, marketable skills much faster than spending months learning every mathematical detail of transformers. Understanding embeddings, retrieval, context windows, and tool calling will provide the biggest return for RAG and MCP development.

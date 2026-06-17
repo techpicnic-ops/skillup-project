@@ -1,0 +1,389 @@
+Excellent, Suresh. You're now entering the part where the Transformer starts looking like a real GPT model.
+
+In Part 3, we learned:
+
+Embedding
+    ↓
+Query, Key, Value
+    ↓
+Self-Attention
+    ↓
+Context-Aware Embeddings
+
+But one attention mechanism is not enough.
+
+This leads us to Multi-Head Attention.
+
+Why One Attention Head Isn't Enough
+
+Consider:
+
+Kubernetes stores cluster state in etcd.
+
+Different relationships exist simultaneously.
+
+Head 1
+
+May learn:
+
+Kubernetes → etcd
+
+because etcd stores Kubernetes state.
+
+Head 2
+
+May learn grammar:
+
+stores → state
+Head 3
+
+May learn subject-object relationships:
+
+Kubernetes → cluster
+Head 4
+
+May learn long-range dependencies.
+
+If we had only one head:
+
+One brain
+
+we could only focus on one relationship.
+
+Multi-head attention is like having:
+
+Many brains working in parallel
+Visual Representation
+
+Instead of:
+
+Sentence
+   ↓
+One Attention
+   ↓
+Output
+
+we do:
+
+Sentence
+      ↓
+ ┌─────────────┐
+ │ Head 1      │
+ │ Head 2      │
+ │ Head 3      │
+ │ Head 4      │
+ └─────────────┘
+      ↓
+Concatenate
+      ↓
+Linear Layer
+      ↓
+Output
+Example
+
+Suppose our embedding size is:
+
+8 dimensions
+
+and we use:
+
+4 attention heads
+
+Each head gets:
+
+2 dimensions
+
+Example:
+
+Embedding
+
+[1 2 3 4 5 6 7 8]
+
+Split:
+
+Head1 → [1 2]
+
+Head2 → [3 4]
+
+Head3 → [5 6]
+
+Head4 → [7 8]
+
+Each head performs self-attention independently.
+
+After Attention
+
+Outputs are concatenated:
+
+Head1 output
+
+[10 11]
+
+Head2 output
+
+[20 21]
+
+Head3 output
+
+[30 31]
+
+Head4 output
+
+[40 41]
+
+Combined:
+
+[10 11 20 21 30 31 40 41]
+But GPT Doesn't Stop Here
+
+After Multi-Head Attention:
+
+Input
+ ↓
+Multi-Head Attention
+ ↓
+Feed Forward Network
+Feed Forward Network
+
+This is just a neural network applied to every token.
+
+Example:
+
+Input
+
+[0.2,0.5,0.8,0.1]
+
+Expand dimensions:
+
+4 → 16
+
+Then compress:
+
+16 → 4
+
+This helps the model learn more complex patterns.
+
+Example Architecture
+Input
+
+[0.2 0.5 0.8 0.1]
+
+↓
+
+Linear Layer
+
+↓
+
+[1.1 0.7 2.4 0.9 1.3 ...]
+
+↓
+
+ReLU
+
+↓
+
+[1.1 0.7 2.4 0 1.3 ...]
+
+↓
+
+Linear Layer
+
+↓
+
+[0.3 0.6 0.9 0.4]
+Residual Connection (Add)
+
+One of the greatest ideas in deep learning.
+
+Instead of:
+
+Input
+ ↓
+Attention
+ ↓
+Output
+
+we do:
+
+Input
+ ↓
+Attention
+ ↓
++
+Input
+ ↓
+Output
+
+Why?
+
+Because information can flow directly.
+
+Without residual connections:
+
+Deep networks become unstable.
+
+Example:
+
+Input:
+
+[1 2 3]
+
+Attention output:
+
+[0.5 1 0.5]
+
+Final:
+
+[1.5 3 3.5]
+Layer Normalization
+
+After addition:
+
+Normalize values.
+
+Purpose:
+
+Stabilize training
+Prevent exploding values
+Speed up convergence
+Complete Transformer Block
+
+A single block looks like:
+
+Input
+   ↓
+Multi-Head Attention
+   ↓
+Add
+   ↓
+LayerNorm
+   ↓
+Feed Forward Network
+   ↓
+Add
+   ↓
+LayerNorm
+   ↓
+Output
+Real GPT
+
+Not just one block.
+
+Many blocks stacked.
+
+Input
+ ↓
+Transformer Block 1
+ ↓
+Transformer Block 2
+ ↓
+Transformer Block 3
+ ↓
+...
+ ↓
+Transformer Block N
+ ↓
+Softmax
+ ↓
+Next Token
+GPT-2 Example
+12 transformer blocks
+GPT-3
+96 transformer blocks
+Why Stack So Many Layers?
+
+Early layers learn:
+
+Grammar
+
+Middle layers learn:
+
+Meaning
+
+Later layers learn:
+
+Reasoning
+Programming
+Facts
+Relationships
+
+Similar to human learning:
+
+Letters
+ ↓
+Words
+ ↓
+Sentences
+ ↓
+Concepts
+ ↓
+Knowledge
+ ↓
+Reasoning
+Complete Picture So Far
+Text
+
+"Kubernetes manages pods"
+
+↓
+Tokenizer
+
+↓
+Token IDs
+
+↓
+Embedding Layer
+
+↓
+Positional Encoding
+
+↓
+Multi-Head Attention
+
+↓
+Add + Norm
+
+↓
+Feed Forward
+
+↓
+Add + Norm
+
+↓
+Transformer Block
+
+↓
+Repeat 12-100 times
+
+↓
+Linear Layer
+
+↓
+Softmax
+
+↓
+Next Token Prediction
+We have now reached about 80% of ChatGPT's architecture.
+
+The remaining parts are:
+
+Part 5
+Positional Encoding
+
+How GPT knows word order.
+
+Part 6
+Training
+Loss function
+Backpropagation
+Gradient descent
+Part 7
+Text Generation
+Temperature
+Top-K
+Top-P
+Why GPT sometimes hallucinates
+Part 8
+Build a Mini GPT in PyTorch (~200 lines)
+
+This is where everything we've learned comes together into a working LLM.

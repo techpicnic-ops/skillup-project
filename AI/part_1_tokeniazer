@@ -1,0 +1,334 @@
+Goal
+
+We want to teach the machine this text:
+
+Kubernetes is great
+Prometheus is great
+Grafana is great
+Terraform is powerful
+
+and eventually convert it into numbers.
+
+Step 1: Character-Level Tokenizer
+
+Suppose our training corpus is:
+
+text = """
+Kubernetes is great
+Prometheus is great
+Grafana is great
+Terraform is powerful
+"""
+Find Unique Characters
+chars = sorted(set(text))
+
+print(chars)
+
+Output:
+
+['\n', ' ', 'K', 'P', 'T', 'a', 'b', 'e', 'f', 'g',
+ 'h', 'i', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'w']
+
+These become our vocabulary.
+
+Assign IDs
+stoi = {ch:i for i,ch in enumerate(chars)}
+itos = {i:ch for ch,i in stoi.items()}
+
+Example:
+
+print(stoi)
+
+Output:
+
+{
+'\n':0,
+' ':1,
+'K':2,
+'P':3,
+'T':4,
+'a':5,
+'b':6,
+...
+}
+Convert Text → Numbers
+encoded = [stoi[ch] for ch in text]
+
+print(encoded[:30])
+
+Output:
+
+[0,2,20,6,7,17,14,7,19,7,18,1,11,18,1,9,17,7,5,19,...]
+
+This is what the neural network receives.
+
+Not:
+
+Kubernetes is great
+
+but:
+
+[0,2,20,6,7,17,...]
+Problem with Character Tokenization
+
+Word:
+
+Kubernetes
+
+becomes:
+
+K u b e r n e t e s
+
+10 tokens.
+
+Too inefficient.
+
+Step 2: Word Tokenizer
+
+Instead:
+
+words = text.split()
+
+print(words)
+
+Output:
+
+[
+'Kubernetes',
+'is',
+'great',
+'Prometheus',
+'is',
+'great',
+'Grafana',
+'is',
+'great',
+'Terraform',
+'is',
+'powerful'
+]
+Create Vocabulary
+vocab = sorted(set(words))
+
+print(vocab)
+
+Output:
+
+[
+'Grafana',
+'Kubernetes',
+'Prometheus',
+'Terraform',
+'great',
+'is',
+'powerful'
+]
+Assign IDs
+stoi = {word:i for i,word in enumerate(vocab)}
+
+Result:
+
+{
+'Grafana':0,
+'Kubernetes':1,
+'Prometheus':2,
+'Terraform':3,
+'great':4,
+'is':5,
+'powerful':6
+}
+Encode Sentence
+sentence = "Kubernetes is great"
+
+tokens = sentence.split()
+
+ids = [stoi[token] for token in tokens]
+
+print(ids)
+
+Output:
+
+[1,5,4]
+Problem with Word Tokenizers
+
+Suppose user asks:
+
+KubernetesCluster
+
+Not in vocabulary!
+
+Machine crashes.
+
+GPT's Solution: Subword Tokenization
+
+Instead of:
+
+KubernetesCluster
+
+learn:
+
+Kubernetes
+Cluster
+
+or
+
+Kube
+rnetes
+Cluster
+
+Now even unseen words can be understood.
+
+Let's Build a Tiny BPE
+
+Training words:
+
+words = [
+    "low",
+    "lower",
+    "lowest"
+]
+
+Initially split into characters:
+
+[
+['l','o','w'],
+['l','o','w','e','r'],
+['l','o','w','e','s','t']
+]
+Count Adjacent Pairs
+
+Pairs:
+
+l o
+o w
+w e
+e r
+e s
+s t
+
+Frequency:
+
+Pair	Count
+l,o	3
+o,w	3
+w,e	2
+
+Most common:
+
+l + o
+
+Merge into:
+
+lo
+
+Now:
+
+[
+['lo','w'],
+['lo','w','e','r'],
+['lo','w','e','s','t']
+]
+
+Again count pairs:
+
+lo w = 3
+w e = 2
+
+Merge:
+
+low
+
+Result:
+
+[
+['low'],
+['low','e','r'],
+['low','e','s','t']
+]
+
+Eventually:
+
+[
+'low',
+'er',
+'est'
+]
+
+Vocabulary becomes:
+
+{
+'low':0,
+'er':1,
+'est':2
+}
+
+Therefore:
+
+lower
+
+becomes:
+
+[0,1]
+
+and:
+
+lowest
+
+becomes:
+
+[0,2]
+Real GPT Tokenizers Work Similarly
+
+Input:
+
+kubectl get pods
+
+might become:
+
+kub
+ectl
+ get
+ pods
+
+Token IDs:
+
+[514,812,29,407]
+
+These numbers themselves mean nothing.
+
+They're just addresses.
+
+The Entire Pipeline
+Text
+
+"Kubernetes is great"
+
+        ↓
+
+Tokenizer
+
+["Kubernetes",
+ " is",
+ " great"]
+
+        ↓
+
+Token IDs
+
+[5214,318,1049]
+
+        ↓
+
+Embedding Layer
+
+Vector5214
+Vector318
+Vector1049
+
+        ↓
+
+Transformer
+
+        ↓
+
+Prediction

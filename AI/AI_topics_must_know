@@ -1,0 +1,25 @@
+For someone wanting to build RAG, MCP, and AI systems, I recommend understanding these topics in order:
+1. Tokenization   ← Start here
+2. Embeddings
+3. Attention
+4. Transformer
+5. Context Window
+6. Vector Databases
+7. RAG
+8. Tool Calling
+9. Agents
+10. MCP
+
+
+
+
+Since you're interested in understanding LLMs deeply, I recommend we build:
+
+Our own tokenizer from scratch
+Train it on Kubernetes and Prometheus text
+Watch it gradually learn tokens
+Then build embeddings
+Then self-attention
+Finally a miniature GPT
+
+This gives you the same journey that GPT models go through internally.

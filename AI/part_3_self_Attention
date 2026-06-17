@@ -1,0 +1,383 @@
+Excellent, Suresh. Now we arrive at the heart of modern LLMs.
+
+Part 3: Self-Attention (Query, Key, Value)
+
+This is the breakthrough introduced in the paper:
+
+Attention Is All You Need
+
+Everything in GPT, Gemini, Claude, DeepSeek, and Llama revolves around this idea.
+
+The Problem
+
+Suppose we have:
+
+Prometheus collects metrics.
+It stores them.
+
+Question:
+
+Who is "It"?
+
+Humans immediately know:
+
+It → Prometheus
+
+How can a machine figure this out?
+
+Before Transformers
+
+RNNs processed words one after another:
+
+Prometheus → collects → metrics → It → stores → them
+
+By the time they reached:
+
+It
+
+they had already forgotten much of the earlier context.
+
+Transformer's Idea
+
+Instead of processing sequentially, let every word look at every other word.
+
+Sentence:
+
+Prometheus collects metrics. It stores them.
+
+When processing:
+
+It
+
+the model asks:
+
+Which previous words are important?
+
+Possible scores:
+
+Word	Importance
+Prometheus	0.85
+collects	0.05
+metrics	0.07
+stores	0.02
+them	0.01
+
+Therefore:
+
+It strongly attends to Prometheus.
+
+This is called Self-Attention.
+
+Query, Key and Value
+
+Each word creates three vectors:
+
+Query (Q)
+Key (K)
+Value (V)
+Human Analogy
+
+Imagine a library.
+
+Query
+
+Question:
+
+I want books about Kubernetes.
+
+This is your Query.
+
+Key
+
+Every book has labels:
+
+Kubernetes
+Docker
+Terraform
+Python
+
+These are Keys.
+
+Value
+
+The actual content of the books.
+
+These are Values.
+
+The process:
+
+Query
+ ↓
+Compare against Keys
+ ↓
+Find relevant books
+ ↓
+Retrieve Values
+
+That's attention.
+
+Example
+
+Sentence:
+
+Kubernetes manages pods
+
+Suppose embeddings are:
+
+Kubernetes
+[1,0]
+
+manages
+[0,1]
+
+pods
+[1,1]
+Create Q, K and V
+
+For simplicity:
+
+Q = embedding
+
+K = embedding
+
+V = embedding
+
+Therefore:
+
+Q =
+[
+[1,0]
+[0,1]
+[1,1]
+]
+
+Same for K and V.
+
+Step 1: Compare Words
+
+Compute:
+
+Result:
+
+[
+[1 0 1]
+[0 1 1]
+[1 1 2]
+]
+Meaning
+
+First row:
+
+Kubernetes compared with:
+
+Kubernetes = 1
+manages = 0
+pods = 1
+
+So Kubernetes pays attention to itself and pods.
+
+Second row:
+
+manages
+
+Kubernetes = 0
+manages = 1
+pods = 1
+
+Third row:
+
+pods
+
+Kubernetes = 1
+manages = 1
+pods = 2
+
+pods strongly attends to itself.
+
+Step 2: Softmax
+
+Transform scores into probabilities.
+
+Example:
+
+[1,0,1]
+
+becomes:
+
+[0.42,0.16,0.42]
+
+These are attention weights.
+
+Step 3: Weighted Average
+
+Multiply weights by Values:
+
+Output =
+0.42×Value1 +
+0.16×Value2 +
+0.42×Value3
+
+This gives a richer representation.
+
+Visual View
+Kubernetes
+      ↘
+       ↘
+manages → pods
+
+Every word communicates with every other word.
+
+More Interesting Example
+
+Sentence:
+
+The pod restarted because it crashed.
+
+When processing:
+
+it
+
+attention scores might be:
+
+Word	Score
+The	0.01
+pod	0.80
+restarted	0.05
+because	0.03
+crashed	0.11
+
+Therefore:
+
+it → pod
+Why Is This Called Self-Attention?
+
+Because:
+
+Sentence attends to itself.
+
+No external information is needed.
+
+Real Formula
+
+This is the most important equation in transformers:
+
+Meaning of Each Part
+QKᵀ
+
+Measures similarity.
+
+√dk
+
+Prevents scores from becoming too large.
+
+Softmax
+
+Converts scores into probabilities.
+
+× V
+
+Combines information from important words.
+
+Why Is This Revolutionary?
+
+Traditional RNN:
+
+Word1 → Word2 → Word3 → Word4
+
+Information must travel sequentially.
+
+Transformer:
+
+Word1 ↔ Word2
+  ↕      ↕
+Word3 ↔ Word4
+
+Every word directly interacts with every other word.
+
+Example Relevant to DevOps
+
+Sentence:
+
+Kubernetes uses etcd because it stores cluster state.
+
+When processing:
+
+it
+
+attention may focus on:
+
+Word	Score
+Kubernetes	0.1
+uses	0.02
+etcd	0.82
+cluster	0.04
+state	0.02
+
+Therefore:
+
+it → etcd
+Pipeline So Far
+Text
+
+"Kubernetes manages pods"
+
+        ↓
+
+Tokenizer
+
+        ↓
+
+Token IDs
+
+        ↓
+
+Embeddings
+
+        ↓
+
+Query, Key, Value
+
+        ↓
+
+Self-Attention
+
+        ↓
+
+Context-Aware Embeddings
+
+        ↓
+
+???
+
+At this stage, each word has become context-aware.
+
+For example:
+
+bank
+
+in:
+
+river bank
+
+will have a different meaning than:
+
+bank account
+
+because attention captures context.
+
+Next (Part 4)
+
+We will build:
+
+Multi-Head Attention
+Why GPT uses many attention heads
+How different heads learn different relationships
+
+Then:
+
+Transformer Block
+Add & Norm
+Feed Forward Network
+Residual Connections
+
+And finally assemble everything into a miniature GPT. This is where the architecture starts looking very similar to ChatGPT.

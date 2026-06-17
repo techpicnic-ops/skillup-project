@@ -1,0 +1,444 @@
+Great. If your goal is to really understand how ChatGPT works, don't start with libraries like Hugging Face. Build the core pieces yourself.
+
+What We'll Build
+
+A tiny GPT-like model:
+
+Input Text
+    ↓
+Tokenizer
+    ↓
+Token IDs
+    ↓
+Embeddings
+    ↓
+Self-Attention
+    ↓
+Feed Forward Network
+    ↓
+Next Token Prediction
+
+For example:
+
+Kubernetes is
+
+Model predicts:
+
+great
+Step 1: Prepare Training Data
+
+Create a file:
+
+kubernetes is great
+prometheus is great
+grafana is great
+argo cd is great
+terraform is great
+
+For learning, keep it tiny.
+
+Step 2: Tokenization
+
+LLMs don't see words.
+
+They see numbers.
+
+Vocabulary:
+
+Token	ID
+kubernetes	0
+is	1
+great	2
+prometheus	3
+grafana	4
+argo	5
+cd	6
+terraform	7
+
+Python:
+
+text = """
+kubernetes is great
+prometheus is great
+grafana is great
+argo cd is great
+terraform is great
+"""
+
+tokens = text.split()
+
+vocab = sorted(set(tokens))
+
+stoi = {word:i for i,word in enumerate(vocab)}
+itos = {i:word for word,i in stoi.items()}
+
+print(stoi)
+
+Output:
+
+{
+ 'argo':0,
+ 'cd':1,
+ 'grafana':2,
+ 'great':3,
+ 'is':4,
+ 'kubernetes':5,
+ 'prometheus':6,
+ 'terraform':7
+}
+Step 3: Create Training Examples
+
+Sentence:
+
+kubernetes is great
+
+Training pairs:
+
+Input          Target
+-----------------------
+kubernetes     is
+is             great
+
+Code:
+
+data = [stoi[word] for word in tokens]
+
+X = []
+Y = []
+
+for i in range(len(data)-1):
+    X.append(data[i])
+    Y.append(data[i+1])
+Step 4: Embeddings
+
+Instead of:
+
+kubernetes = 5
+prometheus = 6
+
+we create vectors.
+
+Example:
+
+kubernetes = [0.21, 0.55, 0.87]
+prometheus = [0.20, 0.51, 0.80]
+
+Words with similar meanings become close.
+
+PyTorch:
+
+import torch
+import torch.nn as nn
+
+embedding = nn.Embedding(
+    num_embeddings=len(vocab),
+    embedding_dim=8
+)
+
+token = torch.tensor([stoi["kubernetes"]])
+
+vector = embedding(token)
+
+print(vector.shape)
+
+Output:
+
+(1,8)
+Step 5: What is Attention?
+
+This is the heart of GPT.
+
+Consider:
+
+Prometheus collects metrics.
+It stores them.
+
+When model sees:
+
+It
+
+it must remember:
+
+Prometheus
+
+Attention helps the model decide:
+
+Which previous words matter?
+Step 6: Query, Key, Value
+
+Every token creates 3 vectors:
+
+Query
+Key
+Value
+
+Example:
+
+Token: Prometheus
+
+Query = [0.1 0.5]
+Key   = [0.2 0.3]
+Value = [0.8 0.9]
+Why?
+
+Suppose current token is:
+
+it
+
+Query asks:
+
+Who am I related to?
+
+Every previous word exposes a Key.
+
+Similarity:
+
+Query • Key
+
+(dot product)
+
+Higher score:
+
+More attention
+Attention Formula
+
+The entire transformer is built around:
+
+Attention(Q,K,V)=Softmax(
+d
+k
+	​
+
+	​
+
+QK
+T
+	​
+
+)V
+
+This is the most important equation in modern AI.
+
+Meaning:
+
+1. Compare query with all keys
+2. Get attention scores
+3. Apply softmax
+4. Weight values
+5. Produce output
+Tiny Numerical Example
+
+Suppose:
+
+Tokens:
+I
+love
+Kubernetes
+
+Queries:
+
+Q =
+[
+ [1,0],
+ [0,1],
+ [1,1]
+]
+
+Keys:
+
+K =
+[
+ [1,0],
+ [0,1],
+ [1,1]
+]
+
+Compute:
+
+Q × Kᵀ
+
+Result:
+
+[
+ [1,0,1],
+ [0,1,1],
+ [1,1,2]
+]
+
+Meaning:
+
+Kubernetes strongly relates
+to itself and earlier tokens.
+Step 7: Self-Attention in PyTorch
+import torch
+
+x = torch.rand(3,4)
+
+Q = x
+K = x
+V = x
+
+scores = Q @ K.T
+
+weights = torch.softmax(scores, dim=-1)
+
+output = weights @ V
+
+print(output)
+
+This is the core idea.
+
+Real GPT just learns Q,K,V.
+
+Step 8: Transformer Block
+
+A transformer layer is:
+
+Input
+ ↓
+Attention
+ ↓
+Add & Normalize
+ ↓
+Feed Forward Network
+ ↓
+Add & Normalize
+ ↓
+Output
+
+Feed Forward:
+
+nn.Sequential(
+    nn.Linear(64,256),
+    nn.ReLU(),
+    nn.Linear(256,64)
+)
+Step 9: Multi-Head Attention
+
+One attention head may focus on:
+
+Grammar
+
+Another:
+
+Meaning
+
+Another:
+
+Context
+
+So GPT uses many heads.
+
+Head1
+Head2
+Head3
+Head4
+   ↓
+Concatenate
+   ↓
+Output
+
+GPT-3 uses many attention heads in every layer.
+
+Step 10: Prediction Layer
+
+After transformer:
+
+logits = linear(output)
+
+Example:
+
+Input:
+Kubernetes is
+
+Probabilities:
+
+great      0.80
+powerful   0.10
+complex    0.05
+awesome    0.05
+
+Pick next token:
+
+great
+Step 11: Training
+
+Loss function:
+
+loss = CrossEntropyLoss(
+    predicted,
+    actual
+)
+
+Example:
+
+Prediction:
+great 60%
+
+Actual:
+great
+
+Loss becomes smaller.
+
+Backpropagation updates weights.
+
+Repeat millions of times.
+
+Step 12: Why GPT Becomes Smart
+
+GPT does NOT memorize answers.
+
+During training it repeatedly solves:
+
+Predict next token
+Predict next token
+Predict next token
+...
+
+Trillions of times.
+
+Eventually it learns:
+
+Grammar
+Relationships
+Coding patterns
+Kubernetes concepts
+Terraform syntax
+Human reasoning patterns
+
+all as a side effect of next-token prediction.
+
+The Big Picture
+
+A modern GPT is basically:
+
+Text
+ ↓
+Tokenizer
+ ↓
+Embeddings
+ ↓
+Transformer Layer 1
+ ↓
+Transformer Layer 2
+ ↓
+Transformer Layer 3
+ ...
+ ↓
+Transformer Layer N
+ ↓
+Softmax
+ ↓
+Next Token
+
+The difference between your tiny GPT and models like ChatGPT is mostly:
+
+Model	Parameters
+Tiny GPT	~10K
+Small GPT	~1M
+Medium GPT	~100M
+Modern LLM	Billions/Trillions
+
+The architecture is fundamentally the same.
+
+A very good next step is to build a 100-line character-level GPT in PyTorch, train it on Kubernetes/Prometheus notes, and then inspect every tensor (Q, K, V, attention scores, embeddings) during training. That's usually the moment when transformers "click" conceptually.
