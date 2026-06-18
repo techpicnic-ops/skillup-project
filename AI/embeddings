@@ -1,0 +1,64 @@
+On the embedding process, how it knows relatable word and generate vector which can be plotted near by.
+For example, how embedding model knows that Dog and Cat are coming under same category
+
+=====================
+
+During training, the embedding model is given millions of articles, books, and websites. It analyzes words by looking at their immediate neighbors.
+
+Imagine the model reads these three sentences in its dataset:
+
+"The veterinarian checked the health of the dog yesterday."
+
+"The veterinarian checked the health of the cat yesterday."
+
+"I fed my pet dog some kibble in the kitchen."
+
+"I fed my pet cat some tuna in the kitchen."
+
+Now, look at a completely different word, like "Microchip":
+5. "The engineer soldered the microchip onto the circuit board."
+
+The model notices that "dog" and "cat" constantly share identical neighbors like "veterinarian", "fed", "pet", and "health". Meanwhile, "microchip" hangs out with words like "soldered", "circuit", and "engineer".
+
+Mathematically, because "dog" and "cat" share highly overlapping contexts, the training algorithm forces their vector coordinates closer together.
+
+
+================================================================
+Once embedding model generates vector, where will these be stored ?
+================================================================
+
+Scenario 1: For External Data Search (Stored in a Vector Database)
+If you are building an application like a search engine or a RAG (Retrieval-Augmented Generation) system, this is exactly where the Vector Database finally enters the picture.
+
+The Flow: You pass thousands of your company's support documents through an embedding model. The model outputs a vector for each document chunk.
+
+Where they go: You save those vectors (along with the original text they represent) into a dedicated Vector Database like Pinecone, Milvus, Qdrant, or Chroma.
+
+Why? So that later, when a user asks a question, you can convert their question into a vector and instantly search the database for the closest matching document vectors.
+
+Scenario 2: Inside the LLM's Memory During a Live Chat (Transient VRAM)
+If you are just chatting with ChatGPT or Gemini, and the model creates embeddings of your current conversation to understand what you just typed, those vectors are completely temporary.
+
+Where they go: They are stored dynamically in the VRAM (Video RAM) of the GPU processing your request.
+
+Why? The LLM's transformer layers need to instantly multiply your prompt vectors by the model's internal weights.
+
+Lifecycle: As soon as the AI finishes generating its response and the session token limit or context window resets, these vectors are wiped clean from the GPU memory. They are never saved to a disk.
+
+Scenario 3: Saved Locally as Data Files (On Disk)
+If you are a developer working on a data science project or a small-scale application, you don't always need a heavy database.
+
+Where they go: You can save the generated vectors directly to your local hard drive or cloud storage bucket.
+
+Common Formats: They are typically saved using Python libraries as .npy (NumPy arrays) files, CSV files, or using lightweight vector indexing libraries like FAISS (Facebook AI Similarity Search) saved as a local index file.
+
+The Executive Summary
+Think of the embedding model as a translator that turns English text into "Vector Language."
+
+If you need to index millions of pages for fast searching later, you put that translation into a Vector DB.
+
+If the LLM is just reading your prompt to reply to you right now, it holds that translation in its GPU Memory and forgets it afterward.
+
+If you are just experimenting, you write it to a Local File on your computer.
+
+Are you preparing to store embeddings for a project you're building right now? If so, I can help you figure out whether a local file or a proper Vector DB makes the most sense for your scale!

@@ -1,0 +1,130 @@
+Here is the refined 15-day curriculum, mapped precisely to your specified tech stack (Python, PyTorch, LangChain, CrewAI, LangGraph, etc.).
+
+Since you are covering everything from foundational Python and Deep Learning frameworks up to advanced multi-agent orchestrators, the course is structured to move rapidly from data foundations to fully autonomous architectures.
+
+15-Day Tech-Stack Specific Curriculum (2 Hours / Day)
+Phase 1: Foundations of AI Development (Days 1–3)
+Day 1: Python for AI Development & Environment Setup
+
+Setting up VS Code and Jupyter Notebooks for AI development.
+
+Python essentials for data: Lists, dictionaries, list comprehensions, and JSON parsing.
+
+Working with asynchronous Python (async/await)—critical for high-throughput LLM API calls.
+
+Day 2: Deep Learning Foundations with PyTorch & TensorFlow
+
+Core concepts of Tensors, computation graphs, and gradients.
+
+Brief architectural overview of Neural Networks in PyTorch and TensorFlow.
+
+Understanding Embeddings: How neural networks represent text mathematically.
+
+Day 3: LLM APIs & Advanced Prompt Engineering
+
+Connecting to OpenAI/Anthropic APIs via Python.
+
+Structured Outputs: Forcing LLMs to return strict, parseable JSON data.
+
+Advanced prompting mechanics: Chain-of-Thought (CoT) and ReAct framework design.
+
+Phase 2: RAG & Vector Databases (Days 4–7)
+Day 4: Building Data Pipelines with LangChain & LlamaIndex
+
+The core RAG (Retrieval-Augmented Generation) pipeline architecture.
+
+Document Ingestion: Loading, splitting, and chunking documents using LangChain and LlamaIndex.
+
+Generating and managing vector text embeddings using PyTorch-backed local models.
+
+Day 5: Local vs. Cloud Vector Databases (FAISS, Pinecone, Weaviate)
+
+Inside a Vector DB: Similarity metrics (Cosine, Dot Product) and Indexing (HNSW, IVF).
+
+FAISS: Building rapid local vector indexes for prototyping.
+
+Pinecone & Weaviate: Setting up cloud vector databases, metadata filtering, and hybrid search.
+
+Day 6: Advanced RAG Strategies (Query Transformation & Reranking)
+
+Overcoming naive retrieval limits (Lost in the middle, semantic disconnect).
+
+Implementing Query Rewriting, Sub-Query Decomposition, and Sentence-Window Retrieval.
+
+Using Cross-Encoder Rerankers to optimize the final top-K context.
+
+Day 7: Semantic Kernel Foundations & RAG Evaluation
+
+Introduction to Microsoft's Semantic Kernel: Plugins, Planners, and Native functions.
+
+Bridging enterprise C# / Python stacks using Semantic Kernel.
+
+Evaluating RAG systems (Faithfulness, Context Recall) using evaluation loops.
+
+Phase 3: Single-Agent Systems & Tool Integration (Days 8–10)
+Day 8: Introduction to AI Agents & Tool Calling
+
+The Agentic Paradigm shift: From static pipelines to autonomous execution loops.
+
+Native function and tool calling: Enabling LLMs to execute Python code, read local databases, or fetch web data.
+
+Day 9: State Management with LangGraph (Single-Agent)
+
+Introduction to LangGraph: Concepts of Graphs, Nodes, Edges, and State.
+
+Building a deterministic, cyclic agent workflow (e.g., Try Action → Catch Error → Fix Protocol).
+
+Persistence and Checkpointing: How to pause, save, and resume agent sessions.
+
+Day 10: Task-Oriented Agents with Semantic Kernel
+
+Leveraging Semantic Kernel’s native plugins for deterministic agent flows.
+
+Creating automated workflows where the LLM selects its own tools dynamically via Semantic Kernel Planners.
+
+Phase 4: Multi-Agent Systems & Agentic Frameworks (Days 11–13)
+Day 11: Multi-Agent Choreography with CrewAI
+
+Introduction to CrewAI: Tasks, Agents, Crews, and Process types.
+
+Defining distinct Agent personas (Role, Goal, Backstory) and assigning them specialized tools.
+
+Hands-on: Building a collaborative crew (e.g., Research Agent passes data to Copywriter Agent).
+
+Day 12: Event-Driven Multi-Agent Conversational Flows with AutoGen
+
+Introduction to Microsoft's AutoGen: Conversable Agents and event-driven architectures.
+
+Setting up complex, multi-turn conversations between autonomous AI agents.
+
+Human-in-the-Loop (HITL): Intercepting agent conversations for manual human oversight or approvals.
+
+Day 13: Advanced Multi-Agent Graphs with LangGraph
+
+Designing custom Multi-Agent architectures from scratch using LangGraph.
+
+Supervisor-Worker patterns vs. Peer-to-Peer agent communication.
+
+Managing shared global state across different agents.
+
+Phase 5: Production, Guardrails & Capstone (Days 14–15)
+Day 14: Agentic Security, Monitoring & Tracing
+
+Handling security exploits: Prompt injections and data leakage in agent tools.
+
+Observability: Tracing agent loops, API tokens, and reasoning chains using monitoring dashboards (e.g., LangSmith or Arize Phoenix).
+
+Day 15: Capstone Project Deployment & Showcase
+
+Building a user interface for agents using Streamlit or Chainlit.
+
+Student project showcase (e.g., An autonomous market research crew built with CrewAI, or a localized RAG system built with Weaviate and LangGraph).
+
+Daily 2-Hour Delivery Breakdown
+To ensure students retain this heavy engineering content, structure each 2-hour block as follows:
+
+First 50 Mins: Concepts & Architecture (e.g., Drawing the LangGraph state flow or Vector DB indexing strategy).
+
+10 Mins: Interactive Q&A / Quick Break.
+
+Remaining 60 Mins: Live Code-Along (Providing pre-configured Jupyter Notebooks via VS Code so students don't get bogged down by package installation errors).

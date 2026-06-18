@@ -1,0 +1,311 @@
+Excellent, Suresh! You've reached one of the most elegant ideas in Transformers.
+
+Part 5: Positional Encoding
+
+Until now, we have:
+
+Text
+↓
+Tokenizer
+↓
+Token IDs
+↓
+Embeddings
+↓
+Attention
+
+But there is a serious problem.
+
+Problem: Attention Doesn't Understand Order
+
+Suppose we have:
+
+Sentence 1:
+
+Dog bites man
+
+Sentence 2:
+
+Man bites dog
+
+Same words.
+
+Different meaning.
+
+Humans understand immediately.
+
+But embeddings alone only give:
+
+Dog
+Man
+Bites
+
+without telling the model where they appeared.
+
+Another Example
+Kubernetes uses etcd
+
+versus
+
+etcd uses Kubernetes
+
+Completely different meanings.
+
+Without word positions, attention treats words like a bag of tokens.
+
+How Humans Read
+
+We naturally know:
+
+Word 1
+Word 2
+Word 3
+Word 4
+
+Transformers need the same information.
+
+Position Numbers
+
+Sentence:
+
+Kubernetes manages pods
+
+Tokens:
+
+Position	Word
+0	Kubernetes
+1	manages
+2	pods
+
+So besides embeddings, we provide position information.
+
+Word Embeddings
+
+Suppose:
+
+Kubernetes
+
+embedding is:
+
+[0.2, 0.8, 0.3]
+
+Position 0 encoding:
+
+[0.1, 0.5, 0.7]
+
+Add them:
+
+[0.3, 1.3, 1.0]
+
+This becomes the final vector.
+
+Therefore
+
+Instead of:
+
+Meaning only
+
+the model gets:
+
+Meaning + Position
+Original Transformer Positional Encoding
+
+The famous paper used sine and cosine waves.
+
+For position:
+
+0
+1
+2
+3
+4
+...
+
+different dimensions oscillate at different frequencies.
+
+Example:
+
+Position	Dimension 1	Dimension 2
+0	0	1
+1	0.84	0.54
+2	0.91	-0.42
+3	0.14	-0.99
+
+The formulas are:
+
+and
+
+Don't worry about memorizing them.
+
+The key idea is:
+
+Every position gets a unique pattern.
+
+Visual Intuition
+
+Position 0:
+
+~~~~~~
+
+Position 1:
+
+  ~~~~~~
+
+Position 2:
+
+    ~~~~~~
+
+Each word gets its own signature.
+
+Modern GPT Models
+
+Interestingly, GPT models don't use fixed sine/cosine encodings anymore.
+
+Instead they use:
+
+Learned Position Embeddings
+
+or
+
+RoPE (Rotary Positional Embeddings)
+
+Used in:
+
+Llama
+DeepSeek
+Qwen
+Why RoPE is Better
+
+Suppose:
+
+Training:
+
+Kubernetes manages pods
+
+Later:
+
+Kubernetes efficiently manages pods
+
+RoPE helps preserve relative positions:
+
+Kubernetes → manages
+
+even if more words are inserted.
+
+This improves long-context understanding.
+
+Complete Input Pipeline
+
+Sentence:
+
+Kubernetes manages pods
+Token IDs
+[5214, 7311, 1021]
+Embeddings
+Kubernetes → [0.2,0.7,0.5]
+
+manages → [0.4,0.8,0.2]
+
+pods → [0.9,0.1,0.3]
+Position Embeddings
+
+Position 0:
+
+[0.1,0.2,0.5]
+
+Position 1:
+
+[0.3,0.7,0.1]
+
+Position 2:
+
+[0.6,0.2,0.8]
+Add Together
+
+Final vectors:
+
+Kubernetes
+
+[0.3,0.9,1.0]
+
+manages
+
+[0.7,1.5,0.3]
+
+pods
+
+[1.5,0.3,1.1]
+
+These vectors enter attention.
+
+Complete Transformer Block
+Text
+ ↓
+Tokenizer
+ ↓
+Token IDs
+ ↓
+Embeddings
+ ↓
+Position Encoding
+ ↓
+Multi-Head Attention
+ ↓
+Add + Norm
+ ↓
+Feed Forward Network
+ ↓
+Add + Norm
+ ↓
+Transformer Block
+
+Repeated:
+
+96 times
+
+for GPT-3.
+
+We Have Now Built Almost All of GPT
+
+We understand:
+
+✅ Tokenization
+
+✅ Embeddings
+
+✅ Query, Key, Value
+
+✅ Self-Attention
+
+✅ Multi-Head Attention
+
+✅ Residual Connections
+
+✅ Feed Forward Networks
+
+✅ Positional Encoding
+
+What's Missing?
+
+The model still doesn't know anything!
+
+Everything is random.
+
+The big question becomes:
+
+How does a random network become intelligent?
+
+This is where the magic of training happens.
+
+Part 6
+
+We'll cover:
+
+Next-token prediction
+Loss functions
+Backpropagation
+Gradient descent
+Why billions of examples create intelligence
+Why GPT is fundamentally just a next-word predictor
+
+Part 6 is arguably where the entire mystery of LLMs finally clicks.

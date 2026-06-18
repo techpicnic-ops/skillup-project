@@ -1,3 +1,18 @@
+For someone wanting to build RAG, MCP, and AI systems, I recommend understanding these topics in order:
+1. Tokenization   ← Start here
+2. Embeddings
+3. Attention
+4. Transformer
+5. Context Window
+6. Vector Databases
+7. RAG
+8. Tool Calling
+9. Agents
+10. MCP
+
+
+==============
+
 Goal
 
 We want to teach the machine this text:
