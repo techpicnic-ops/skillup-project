@@ -1,0 +1,170 @@
+I thought that embedding values are stored in vector DB for LLM. Is that not true ?
+
+Yes, your understanding is correct, but there is an important distinction.
+
+Embeddings are often stored in a vector database, but not always.
+
+1. Embeddings and Vector DB are two separate things
+Embedding
+
+An embedding is simply a list of numbers (a vector).
+
+For example:
+
+"The cat sat on the mat"
+
+→ Embedding model
+
+→
+
+[0.12, -0.34, 0.87, ..., 0.45]
+
+This vector captures the meaning of the sentence.
+
+Vector Database
+
+A vector database is just a storage system optimized for these vectors.
+
+Examples:
+
+Pinecone
+Weaviate
+Qdrant
+Milvus
+Chroma
+FAISS
+
+These databases store vectors and quickly find similar vectors.
+
+2. Does an LLM itself store embeddings in a vector DB?
+No.
+
+The LLM's own knowledge is not stored in a vector database.
+
+When GPT was trained:
+
+Training Text
+      ↓
+Tokenizer
+      ↓
+Embeddings
+      ↓
+Transformer Layers
+      ↓
+Weights (billions of parameters)
+
+After training finishes:
+
+Embeddings used during training are discarded.
+Knowledge becomes compressed into the model weights.
+The model does not query a vector database when answering.
+
+Think of it like:
+
+Student reads books → learns → throws books away → keeps knowledge in memory.
+
+3. Where is a vector DB actually used?
+
+In RAG (Retrieval-Augmented Generation) systems.
+
+Example:
+
+Suppose you upload 10,000 PDFs.
+
+Step 1: Create embeddings
+PDF chunks
+↓
+Embedding model
+
+Chunk A → [0.2,0.7,...]
+Chunk B → [0.5,0.1,...]
+Chunk C → [0.9,0.3,...]
+Step 2: Store them
+Vector Database
+
+Vector A → Chunk A
+Vector B → Chunk B
+Vector C → Chunk C
+Step 3: User asks
+"What is the refund policy?"
+
+Question embedding:
+
+[0.18,0.72,...]
+Step 4: Similarity search
+
+The vector DB finds:
+
+Chunk A (92% similar)
+Chunk F (89% similar)
+Chunk K (84% similar)
+Step 5: Send retrieved text to LLM
+User Question
++
+Retrieved chunks
+↓
+GPT
+↓
+Answer
+
+Here, the LLM itself never stores embeddings.
+
+The external vector database stores embeddings.
+
+4. So when people say "LLMs use vector databases", they really mean:
+                +----------------+
+User Question → | Embedding Model |
+                +----------------+
+                         ↓
+                +----------------+
+                | Vector Database |
+                +----------------+
+                         ↓
+                Relevant Documents
+                         ↓
+                +----------------+
+                |      LLM        |
+                +----------------+
+                         ↓
+                      Answer
+
+This architecture is called RAG.
+
+5. Can embeddings be stored without a vector database?
+
+Absolutely.
+
+For small datasets, embeddings can simply be stored in:
+
+Python lists
+NumPy arrays
+CSV files
+SQLite
+PostgreSQL with pgvector
+Redis
+
+A vector database becomes useful when you have:
+
+Thousands or millions of embeddings.
+Need very fast similarity search.
+Need metadata filtering.
+Need scalable retrieval.
+One common misconception
+
+People often say:
+
+"The vector DB is the memory of the LLM."
+
+More accurately:
+
+The vector DB is the memory of the application built around the LLM, not the memory of the LLM itself.
+
+Since you've already understood tokenization with tiktoken, the next natural step is understanding:
+
+How embeddings are generated mathematically
+Why similar sentences have nearby vectors
+Cosine similarity
+How vector search (ANN/HNSW) works internally
+Building a mini vector database in Python from scratch
+
+Those topics together will give you a complete picture of how RAG systems work.

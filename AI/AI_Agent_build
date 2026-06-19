@@ -1,0 +1,466 @@
+I want to build AI agent which will create pods, deployments, services in kubernetes using open source LLM
+================================
+
+
+Excellent choice, Suresh. This project is complex enough to teach you how AI agents really work, but simple enough to build from scratch without frameworks.
+
+My recommendation:
+
+Build the agent incrementally and don't use LangChain/CrewAI initially.
+
+We'll build a Kubernetes AI Agent in 10 phases.
+
+Final Architecture
+                    User
+                      │
+                      ▼
+              Open Source LLM
+                (Qwen3:8B)
+                      │
+              Think / Reason
+                      │
+          ┌────────Tool Calls────────┐
+          ▼                          ▼
+     Generate YAML             Kubernetes APIs
+          ▼                          ▼
+      kubectl apply          get pods, logs, etc.
+          ▼                          ▼
+               Observe Results
+                      │
+                      ▼
+                Final Answer
+Phase 0: Prerequisites
+
+Install:
+
+Python
+python --version
+Ollama
+
+Linux:
+
+curl -fsSL https://ollama.com/install.sh | sh
+
+Verify:
+
+ollama --version
+Download a model
+
+I recommend:
+
+ollama pull qwen3:8b
+
+(4B also works.)
+
+Kubernetes cluster
+
+Any of these:
+
+Minikube
+Kind
+k3d
+AKS
+EKS
+
+Verify:
+
+kubectl get nodes
+Phase 1 — Simple Chatbot
+
+Goal:
+
+User
+↓
+LLM
+↓
+Answer
+
+Directory:
+
+k8s-agent/
+    main.py
+
+Install:
+
+pip install ollama
+main.py
+from ollama import chat
+
+while True:
+    question = input("You: ")
+
+    response = chat(
+        model="qwen3:8b",
+        messages=[
+            {
+                "role": "user",
+                "content": question
+            }
+        ]
+    )
+
+    print(response["message"]["content"])
+Stop here
+
+Make sure this works before proceeding.
+
+Phase 2 — Create Kubernetes Expert
+
+Add system prompt:
+
+messages = [
+{
+"role":"system",
+"content":"""
+You are a Kubernetes expert.
+
+Generate Kubernetes manifests.
+Always use apiVersion and kind.
+"""
+},
+{
+"role":"user",
+"content":question
+}
+]
+
+Test:
+
+Create nginx deployment with 3 replicas.
+
+It should generate YAML.
+
+Phase 3 — Extract YAML
+
+Create:
+
+k8s-agent/
+    main.py
+    generated/
+
+Save generated YAML:
+
+with open("generated/resource.yaml","w") as f:
+    f.write(answer)
+
+Inspect manually.
+
+Goal
+User
+↓
+LLM
+↓
+YAML
+↓
+File
+Phase 4 — Execute kubectl
+
+Create:
+
+tools/
+    apply.py
+apply.py
+import subprocess
+
+def kubectl_apply(path):
+
+    result = subprocess.run(
+        ["kubectl","apply","-f",path],
+        capture_output=True,
+        text=True
+    )
+
+    return result.stdout
+
+In main.py:
+
+from tools.apply import kubectl_apply
+
+output = kubectl_apply(
+    "generated/resource.yaml"
+)
+
+print(output)
+
+Goal:
+
+User
+↓
+LLM
+↓
+YAML
+↓
+kubectl apply
+↓
+Cluster
+Phase 5 — Add Verification
+
+Tool:
+
+tools/
+    get_deployments.py
+import subprocess
+
+def get_deployments():
+
+    result = subprocess.run(
+        ["kubectl","get","deployments"],
+        capture_output=True,
+        text=True
+    )
+
+    return result.stdout
+
+After apply:
+
+print(get_deployments())
+
+Goal:
+
+Create deployment
+↓
+Verify deployment
+Phase 6 — Multiple Tools
+
+Create:
+
+tools/
+
+apply.py
+
+get_pods.py
+
+get_deployments.py
+
+describe.py
+
+logs.py
+
+delete.py
+
+Functions:
+
+get_pods()
+
+describe_pod()
+
+logs()
+
+delete_resource()
+
+Now you have tools.
+
+Phase 7 — Let LLM Decide Tools
+
+Instead of:
+
+kubectl_apply()
+
+hardcoded,
+
+give the model:
+
+Available tools:
+
+apply_yaml()
+
+get_pods()
+
+get_deployments()
+
+describe_pod()
+
+logs()
+
+Prompt:
+
+Think step-by-step.
+
+Select the proper tool.
+
+Architecture:
+
+User
+↓
+LLM
+↓
+Tool Selection
+↓
+Python Function
+↓
+Result
+↓
+LLM
+↓
+Answer
+
+This is your first real agent.
+
+Phase 8 — Observation Loop
+
+User:
+
+Deploy nginx.
+
+Agent:
+
+Generate YAML
+↓
+Apply
+↓
+Check deployment
+↓
+Pods running?
+↓
+Yes
+↓
+Success
+
+If:
+
+ImagePullBackOff
+
+Agent:
+
+logs()
+↓
+describe_pod()
+↓
+Analyze error
+↓
+Suggest fix
+
+Now the agent becomes autonomous.
+
+Phase 9 — Troubleshooting Agent
+
+User:
+
+Why is my pod failing?
+
+Agent:
+
+get_pods()
+↓
+find pod
+↓
+describe pod
+↓
+logs
+↓
+reason
+↓
+recommendation
+
+This is extremely useful.
+
+Phase 10 — Real Tool Calling
+
+Move to OpenAI-compatible tool calls.
+
+Structure:
+
+tools = [
+
+{
+"name":"get_pods",
+"description":"Get pod list"
+},
+
+{
+"name":"logs",
+"description":"Read pod logs"
+}
+
+]
+
+Qwen supports tool calling.
+
+Flow:
+
+LLM
+↓
+Function call
+↓
+Python executes
+↓
+Return result
+↓
+LLM
+↓
+Final answer
+Future Phases
+Add Memory
+Previous conversations
+Add RAG
+
+Store:
+
+Kubernetes docs
+Helm docs
+Terraform docs
+
+using:
+
+SentenceTransformers
+ChromaDB
+Add MCP
+
+Expose tools:
+
+create_deployment()
+
+create_service()
+
+get_logs()
+
+scale_deployment()
+Add Safety
+
+Require confirmation for:
+
+delete namespace
+scale replicas to 0
+Directory Structure Eventually
+k8s-agent/
+
+main.py
+
+llm.py
+
+memory.py
+
+prompts/
+
+tools/
+
+    apply.py
+
+    get_pods.py
+
+    get_logs.py
+
+    describe.py
+
+    delete.py
+
+generated/
+
+vector_db/
+My recommendation
+
+Don't jump ahead.
+
+Week 1
+
+Build phases 1–4.
+
+Week 2
+
+Build phases 5–7.
+
+Week 3
+
+Build phases 8–10.
+
+By the end, you'll have built a genuine Kubernetes AI agent and will understand most of the concepts behind modern AI systems.

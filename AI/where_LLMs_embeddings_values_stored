@@ -1,0 +1,211 @@
+To keep weights of billions of parameters, it needs some storage.. right ? Where does LLM have these ?
+
+Yes, absolutely. Billions of parameters must be stored somewhere. The interesting part is that they are not stored in a vector database. They are stored directly inside the model files as matrices (weights).
+
+Let's walk through this step-by-step.
+
+During Training
+
+Suppose an LLM starts with random weights:
+
+W1 =
+[
+ 0.12  -0.44  0.87
+ 0.51   0.19 -0.23
+ ...
+]
+
+W2 =
+[
+ -0.91  0.32
+ 0.45   0.76
+ ...
+]
+
+Training adjusts these numbers over trillions of examples.
+
+Eventually, the model learns language and ends up with billions of such numbers.
+
+Where are these numbers stored?
+
+They are stored in model checkpoint files.
+
+For example:
+
+model.safetensors
+model.bin
+pytorch_model.bin
+gguf
+
+These files may be:
+
+7 GB
+30 GB
+200 GB
+1 TB+
+
+depending on the model size.
+
+Example: Llama 3 8B
+
+8 billion parameters
+
+Assuming each parameter occupies 2 bytes (FP16):
+
+8,000,000,000 × 2 bytes
+≈ 16 GB
+
+So roughly 16 GB of weight data must be stored.
+
+Where are these files physically stored?
+
+Anywhere ordinary files can be stored:
+
+SSD
+↓
+Hard Disk
+↓
+Cloud Storage
+↓
+Network Storage
+
+For example:
+
+Local SSD
+Object storage
+Distributed storage clusters
+What happens when the model runs?
+
+Suppose you ask:
+
+"What is Kubernetes?"
+
+The process is:
+
+Disk
+ ↓
+Load model files
+ ↓
+RAM / GPU VRAM
+ ↓
+Transformer calculations
+ ↓
+Generate answer
+
+The weights are loaded into memory and used repeatedly.
+
+Think of it like this
+Vector DB
+Question
+↓
+Find similar vectors
+↓
+Retrieve documents
+
+Purpose:
+
+External memory for documents.
+
+Model Weights
+Question
+↓
+Billions of learned numbers
+↓
+Prediction
+
+Purpose:
+
+Internal knowledge learned during training.
+
+Human analogy
+Student + Library
+
+Library:
+
+Books
+Documents
+Notes
+
+= Vector database
+
+Brain:
+
+Neurons
+Connections
+Experience
+
+= Model weights
+
+Where exactly inside the model?
+
+An LLM is made of many layers:
+
+Embedding Layer
+
+Transformer Block 1
+Transformer Block 2
+Transformer Block 3
+...
+Transformer Block 80
+
+Output Layer
+
+Each layer contains matrices like:
+
+Wq
+Wk
+Wv
+Wo
+
+Feed Forward matrices
+
+W1
+W2
+W3
+
+These matrices together are the billions of parameters.
+
+For example, a 70B model might contain something like:
+
+Embedding matrix         1 billion numbers
+Layer 1 matrices         900 million numbers
+Layer 2 matrices         900 million numbers
+...
+Layer 80 matrices        900 million numbers
+Output layer             1 billion numbers
+
+Total:
+
+70 billion parameters
+So your earlier statement:
+
+"Embeddings are stored in vector DB for LLM."
+
+is slightly incomplete.
+
+The complete picture is:
+
+               External Knowledge
+                     (RAG)
+Documents
+     ↓
+Embeddings
+     ↓
+Vector Database
+     ↓
+Retrieved Context
+     ↓
+                +----------------------+
+                |  LLM Weights          |
+                | (billions of numbers) |
+                +----------------------+
+                           ↓
+                        Answer
+
+The vector database stores embeddings of documents, while the LLM's own knowledge lives inside its weight matrices stored in model files and loaded into RAM/GPU memory during inference.
+
+The fascinating next question is:
+
+How do billions of numbers (weights) actually encode knowledge like "Paris is the capital of France" or "Kubernetes manages containers"?
+
+That's where neural networks become truly interesting.
